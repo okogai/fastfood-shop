@@ -7,17 +7,24 @@ export const fetchAllDishes = createAsyncThunk<IDish[], void>(
   async () => {
     const response = await axiosAPI('dishes.json');
     if (response.data) {
-      return response.data;
+      const dishesArray: IDish[] = Object.keys(response.data).map((key) => ({
+        id: key,
+        ...response.data[key],
+      }));
+
+      return dishesArray;
+    } else {
+      return [];
     }
   }
 );
 
 export const getOneDishFromDB = createAsyncThunk<IDish, string>(
-  'dishes/fetchAllDishes',
+  'dishes/getOneDishFromDB',
   async (id: string) => {
-    const response = await axiosAPI(`dishes/${id}`);
+    const response = await axiosAPI.get(`dishes/${id}.json`);
     if (response.data) {
-      return response.data;
+      return { id, ...response.data };
     }
   }
 );
@@ -25,21 +32,21 @@ export const getOneDishFromDB = createAsyncThunk<IDish, string>(
 export const addNewDish = createAsyncThunk<void, IDish>(
   'dishes/addNewDish',
   async (dish: IDish) => {
-    await axiosAPI.post('dishes', dish);
+    await axiosAPI.post('dishes.json', dish);
   }
 );
 
 export const editDish = createAsyncThunk<void, IDish>(
-  'dishes/addNewDish',
+  'dishes/editDish',
   async (dish: IDish) => {
-    await axiosAPI.put('dishes', dish);
+    await axiosAPI.put('dishes.json', dish);
   }
 );
 
 export const deleteDish = createAsyncThunk<void, string>(
-  'dishes/addNewDish',
+  'dishes/deleteDish',
   async (id: string) => {
-    await axiosAPI.delete(`dishes/${id}`);
+    await axiosAPI.delete(`dishes/${id}.json`);
   }
 );
 
