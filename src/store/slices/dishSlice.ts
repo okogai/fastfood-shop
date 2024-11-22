@@ -1,10 +1,10 @@
-import { IDish } from '../../types';
+import { IDishFromDB } from '../../types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { addNewDish, deleteDish, editDish, fetchAllDishes, getOneDishFromDB } from '../thunks/dishesThunks.ts';
 
 interface dishState {
-  dishes: IDish[];
-  dishToEdit: IDish | null;
+  dishes: IDishFromDB[];
+  dishToEdit: IDishFromDB | null;
   loading: {
     fetchDishes: boolean;
     fetchOneDish: boolean;
@@ -38,7 +38,7 @@ export const dishSlice = createSlice({
         state.loading.fetchDishes = true;
         state.error = false;
       })
-      .addCase(fetchAllDishes.fulfilled, (state, action: PayloadAction<IDish[]>) => {
+      .addCase(fetchAllDishes.fulfilled, (state, action: PayloadAction<IDishFromDB[]>) => {
         state.loading.fetchDishes = false;
         state.dishes = action.payload;
       })
@@ -50,7 +50,7 @@ export const dishSlice = createSlice({
         state.loading.fetchOneDish = true;
         state.error = false;
       })
-      .addCase(getOneDishFromDB.fulfilled, (state, action: PayloadAction<IDish>) => {
+      .addCase(getOneDishFromDB.fulfilled, (state, action: PayloadAction<IDishFromDB>) => {
         state.loading.fetchOneDish = false;
         state.dishToEdit = action.payload;
       })

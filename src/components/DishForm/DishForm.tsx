@@ -47,10 +47,10 @@ const DishForm = () => {
     e.preventDefault();
 
     if (id) {
-      await dispatch(editDish(dish));
+      await dispatch(editDish({ id, ...dish }));
+      dispatch(getOneDishFromDB(id));
     } else {
-      const { id, ...newDish } = dish;
-      await dispatch(addNewDish(newDish));
+      await dispatch(addNewDish(dish));
       setDish(initialState);
       navigate('/admin/dishes');
     }
