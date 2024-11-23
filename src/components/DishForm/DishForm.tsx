@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import {  useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { IDish } from '../../types';
 import { addNewDish, editDish, getOneDishFromDB } from '../../store/thunks/dishesThunks';
-import { useAppDispatch } from '../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { RootState } from '../../app/store.ts';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 const initialState = {
   title: '',
@@ -17,8 +23,8 @@ const DishForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const dishToEdit = useSelector((state: RootState) => state.dishes.dishToEdit);
-  const loading = useSelector((state: RootState) => state.dishes.loading);
+  const dishToEdit = useAppSelector((state: RootState) => state.dishes.dishToEdit);
+  const loading = useAppSelector((state: RootState) => state.dishes.loading);
 
   const [dish, setDish] = useState<IDish>(initialState);
 
@@ -55,85 +61,102 @@ const DishForm = () => {
     }
   };
 
-  console.log(dish)
-
   return (
-    <form
+    <Box
+      component="form"
       onSubmit={handleSubmit}
-      className="p-4 mt-5 border rounded shadow bg-white d-flex flex-column align-items-center mx-auto"
-      style={{width: '600px'}}
+      sx={{
+        maxWidth: '600px',
+        margin: '40px auto',
+        padding: 3,
+        border: '1px solid #ddd',
+        borderRadius: 2,
+        boxShadow: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        backgroundColor: '#fff',
+      }}
     >
-      <h3 className="text-center mb-4">{id ? 'Edit dish' : 'Add new dish'}</h3>
+      <Typography variant="h4" align="center">
+        {id ? 'Edit Dish' : 'Add New Dish'}
+      </Typography>
 
-      <div className="mb-3 w-100">
-        <label htmlFor="title" className="form-label">Title:</label>
-        <input
-          id="title"
-          name="title"
-          type="text"
-          value={dish.title}
-          onChange={handleChange}
-          className="form-control"
-          placeholder="Enter dish title"
-          required
-        />
-      </div>
+      <TextField
+        id="title"
+        name="title"
+        label="Title"
+        variant="outlined"
+        fullWidth
+        value={dish.title}
+        onChange={handleChange}
+        required
+      />
 
-      <div className="mb-3 w-100">
-        <label htmlFor="price" className="form-label">Price:</label>
-        <input
-          id="price"
-          name="price"
-          type="number"
-          min="0"
-          value={dish.price}
-          onChange={handleChange}
-          className="form-control"
-          required
-        />
-      </div>
+      <TextField
+        id="price"
+        name="price"
+        label="Price"
+        type="number"
+        variant="outlined"
+        fullWidth
+        value={dish.price}
+        onChange={handleChange}
+        required
+        inputProps={{ min: 0 }}
+      />
 
-      <div className="mb-3 w-100">
-        <label htmlFor="image" className="form-label">Image URL:</label>
-        <input
-          id="image"
-          name="image"
-          type="text"
-          value={dish.image}
-          onChange={handleChange}
-          className="form-control"
-          placeholder="Enter image URL"
-          required
-        />
-      </div>
+      <TextField
+        id="image"
+        name="image"
+        label="Image URL"
+        variant="outlined"
+        fullWidth
+        value={dish.image}
+        onChange={handleChange}
+        required
+      />
 
-      <div className="mb-3 text-center w-100">
-        <h5>Preview:</h5>
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography variant="h6" gutterBottom>
+          Preview:
+        </Typography>
         {dish.image ? (
-          <img
+          <Box
+            component="img"
             src={dish.image}
             alt="Dish preview"
-            style={{width: '150px', height: '150px', objectFit: 'cover'}}
+            sx={{
+              width: 150,
+              height: 150,
+              objectFit: 'cover',
+              borderRadius: 1,
+              border: '1px solid #ddd',
+            }}
           />
         ) : (
-          <p className="text-muted">Enter image URL to view.</p>
+          <Typography color="textSecondary">Enter image URL to view.</Typography>
         )}
-      </div>
+      </Box>
 
-      <button
+      <Button
         type="submit"
-        className="btn btn-primary d-flex align-items-center justify-content-center"
+        variant="contained"
+        color="primary"
+        sx={{
+          width: '200px',
+          alignSelf: 'center',
+        }}
         disabled={loading.fetchAddDish || loading.fetchDishEdit}
+        startIcon={
+          (loading.fetchAddDish || loading.fetchDishEdit) && (
+            <CircularProgress size={20} color="inherit" />
+          )
+        }
       >
-        {loading.fetchAddDish || loading.fetchDishEdit ? (
-          <div className="spinner-border text-light" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        ) : (
-          id ? 'Save' : 'Add'
-        )}
-      </button>
-    </form>
+        {loading.fetchAddDish || loading.fetchDishEdit ? 'Loading...' : id ? 'Save' : 'Add'}
+      </Button>
+    </Box>
   );
 };
 

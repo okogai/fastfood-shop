@@ -25,3 +25,11 @@ export const placeOrder = createAsyncThunk<void, IOrderFromDB>(
     await axiosAPI.post('orders.json', order);
   }
 );
+
+export const deleteOrder = createAsyncThunk<void, string>(
+  'orders/deleteOrder',
+  async (id: string, thunkAPI) => {
+    await axiosAPI.delete(`orders/${id}.json`);
+    thunkAPI.dispatch(fetchAllOrders());
+  }
+  );

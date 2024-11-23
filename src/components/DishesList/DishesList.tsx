@@ -1,16 +1,25 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../app/store.ts';
 import { deleteDish, fetchAllDishes } from '../../store/thunks/dishesThunks.ts';
-import { useAppDispatch } from '../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 
 const DishesList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const dishes = useSelector((state: RootState) => state.dishes.dishes);
-  const loading = useSelector((state: RootState) => state.dishes.loading.fetchDishes);
+  const dishes = useAppSelector((state: RootState) => state.dishes.dishes);
+  const loading = useAppSelector((state: RootState) => state.dishes.loading.fetchDishes);
 
   useEffect(() => {
     dispatch(fetchAllDishes());
@@ -21,53 +30,61 @@ const DishesList = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this dish?')) {
-      dispatch(deleteDish(id));
-    }
+    dispatch(deleteDish(id));
   };
 
-  console.log(dishes)
-
   return (
-    <div className="container mt-4">
-      <h3 className="text-center mb-4">Dishes List</h3>
-      <div className="row">
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          dishes.map((dish) => (
-            <div key={dish.id} className="col-md-4 mb-4">
-              <div className="card">
-                <img
-                  src={dish.image}
-                  alt={dish.title}
-                  className="card-img-top"
-                  style={{ height: '200px', objectFit: 'cover' }}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{dish.title}</h5>
-                  <p className="card-text">Price: {dish.price} KGZ</p>
-                  <div className="d-flex justify-content-between">
-                    <button
-                      onClick={() => handleEdit(dish.id)}
-                      className="btn btn-warning"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(dish.id)}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+    <Box sx={{ padding: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Dishes List
+      </Typography>
+
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="center"
+          gap={4}
+        >
+          {dishes.map((dish) => (
+            <Card key={dish.id} sx={{ width: '300px' }}>
+              <CardMedia
+                component="img"
+                height="200"
+                image={dish.image}
+                alt={dish.title}
+              />
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  {dish.title}
+                </Typography>
+                <Typography variant="body1">Price: {dish.price} KGZ</Typography>
+              </CardContent>
+              <CardActions sx={{ justifyContent: 'space-between', padding: 2 }}>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={() => handleEdit(dish.id)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleDelete(dish.id)}
+                >
+                  Delete
+                </Button>
+              </CardActions>
+            </Card>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
 };
 

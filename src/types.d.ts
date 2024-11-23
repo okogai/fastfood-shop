@@ -9,6 +9,7 @@ export interface IDishFromDB extends IDish {
 }
 
 export interface IOrderFromDB {
+  id: string;
   orders: { [key: string]: number };
   customer: {
     name: string;

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CustomerInfo, IDishFromDB, IOrder, IOrderFromDB } from '../../types';
-import { fetchAllOrders, placeOrder } from '../thunks/ordersThunks';
+import { deleteOrder, fetchAllOrders, placeOrder } from '../thunks/ordersThunks';
 
 interface orderState {
   orders: IOrderFromDB[];
@@ -10,6 +10,7 @@ interface orderState {
   totalPrice: number;
   fetchOrders: boolean;
   addOrder: boolean;
+  isDeletingOrder: boolean;
   error: boolean;
 }
 
@@ -25,6 +26,7 @@ const initialState: orderState = {
   totalPrice: 0,
   fetchOrders: false,
   addOrder: false,
+  isDeletingOrder : false,
   error: false,
 };
 
@@ -85,6 +87,17 @@ export const orderSlice = createSlice({
       })
       .addCase(placeOrder.rejected, (state) => {
         state.addOrder = false;
+        state.error = true;
+      })
+      .addCase(deleteOrder.pending, (state) => {
+      state.isDeletingOrder  = true;
+      state.error = false;
+      })
+      .addCase(deleteOrder.fulfilled, (state) => {
+        state.isDeletingOrder  = false;
+      })
+      .addCase(deleteOrder.rejected, (state) => {
+        state.isDeletingOrder  = false;
         state.error = true;
       });
   },
