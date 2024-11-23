@@ -103,7 +103,6 @@ const DishForm = () => {
         value={dish.price}
         onChange={handleChange}
         required
-        inputProps={{ min: 0 }}
       />
 
       <TextField
