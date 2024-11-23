@@ -26,6 +26,8 @@ const DishesList = () => {
     }
   };
 
+  console.log(dishes)
+
   return (
     <div className="container mt-4">
       <h3 className="text-center mb-4">Dishes List</h3>

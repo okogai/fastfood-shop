@@ -6,6 +6,7 @@ export const fetchAllDishes = createAsyncThunk<IDishFromDB[], void>(
   'dishes/fetchAllDishes',
   async () => {
     const response = await axiosAPI('dishes.json');
+    console.log(response.data);
     if (response.data) {
       const dishesArray: IDishFromDB[] = Object.keys(response.data).map((key) => ({
         id: key,

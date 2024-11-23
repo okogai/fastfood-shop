@@ -7,7 +7,6 @@ import { useAppDispatch } from '../../app/hooks.ts';
 import { RootState } from '../../app/store.ts';
 
 const initialState = {
-  id: '',
   title: '',
   price: 0,
   image: '',
@@ -52,9 +51,11 @@ const DishForm = () => {
     } else {
       await dispatch(addNewDish(dish));
       setDish(initialState);
-      navigate('/admin/dishes');
+      navigate('/admin');
     }
   };
+
+  console.log(dish)
 
   return (
     <form
