@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { fetchAllDishes } from '../../store/thunks/dishesThunks';
 import { placeOrder } from '../../store/thunks/ordersThunks';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   calculateTotalPrice,
   clearCurrentOrder,
@@ -17,7 +16,7 @@ import {
   Box,
   CardMedia,
   IconButton,
-  Divider,
+  Divider, CircularProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { CustomerInfo } from '../../types';
@@ -30,10 +29,11 @@ const initialState = {
 
 const Order = () => {
   const dispatch = useAppDispatch();
-  const dishes = useSelector((state: RootState) => state.dishes.dishes);
-  const currentOrder = useSelector((state: RootState) => state.orders.currentOrder);
-  const totalPrice = useSelector((state: RootState) => state.orders.totalPrice);
-  const delivery = useSelector((state: RootState) => state.orders.delivery);
+  const dishes = useAppSelector((state: RootState) => state.dishes.dishes);
+  const currentOrder = useAppSelector((state: RootState) => state.orders.currentOrder);
+  const totalPrice = useAppSelector((state: RootState) => state.orders.totalPrice);
+  const delivery = useAppSelector((state: RootState) => state.orders.delivery);
+  const addOrder = useAppSelector((state: RootState) => state.orders.addOrder);
 
   const [showModal, setShowModal] = useState(false);
   const [customerDetails, setCustomerDetails] = useState<CustomerInfo>(initialState);
@@ -82,7 +82,7 @@ const Order = () => {
         Order Menu
       </Typography>
 
-      <Box display="flex" flexDirection="column" alignItems="center" gap="16px" maxWidth={800} width="100%" mx="auto">
+      <Box display="flex" flexDirection="column" alignItems="center" maxWidth={800} width="100%" mx="auto">
         {dishes.map((dish) => (
           <Box
             key={dish.id}
@@ -223,7 +223,7 @@ const Order = () => {
               }
               sx={{ flex: 1 }}
             >
-              Order
+              {addOrder ? <CircularProgress size={24} color="inherit" /> : 'Order'}
             </Button>
           </Box>
         </Box>

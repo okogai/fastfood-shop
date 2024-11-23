@@ -19,8 +19,10 @@ const OrderList = () => {
     dispatch(fetchAllDishes());
   }, [dispatch]);
 
-  const handleDeleteOrder = (orderId: string) => {
-    dispatch(deleteOrder(orderId));
+  const handleDeleteOrder = (orderId: string | undefined) => {
+    if (orderId){
+      dispatch(deleteOrder(orderId));
+    }
   };
 
   const calculateOrderTotal = (order: IOrderFromDB, dishes: IDishFromDB[]) => {
@@ -41,7 +43,6 @@ const OrderList = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        minHeight="100vh"
       >
         <CircularProgress />
       </Box>
